@@ -8,7 +8,3 @@ categoryId: string;
 discountPercentage: number;
 imageUrls: string[];
 }
-
-export interface IGetProductsRepository {
-  findAll(): Promise<Product[]>;
-}

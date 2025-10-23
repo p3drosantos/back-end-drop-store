@@ -1,7 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { productsRoutes } from "./products/routes";
+import { productsRoutes } from "./routes/products.routes";
+import { uploadsRoutes } from './routes/uploads.routes';
 
 
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.json());
 
 // Rotas principais
 app.use('/products', productsRoutes );
+app.use('/uploads', uploadsRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);

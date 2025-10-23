@@ -1,4 +1,5 @@
-import { IGetProductsRepository, Product } from "../repositories/IGetProductsRepository";
+import { IGetProductsRepository } from "../repositories/protocols";
+import { Product } from "../../models/product";
 
 export class GetProductsUseCase {
     constructor(private productsRepository: IGetProductsRepository) {}

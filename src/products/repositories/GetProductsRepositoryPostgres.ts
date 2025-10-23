@@ -1,5 +1,6 @@
 
-import { IGetProductsRepository, Product } from "./IGetProductsRepository";
+import { IGetProductsRepository } from "././protocols";
+import { Product } from "../../models/product";
 import {prisma} from '../../prisma'
 
 

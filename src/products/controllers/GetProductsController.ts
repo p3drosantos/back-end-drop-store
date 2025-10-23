@@ -1,9 +1,11 @@
 
+import { Product } from "../../models/product";
 import { GetProductsUseCase } from "../useCases/GetProductsUseCase";
+import { HttpResponse, IGetProductsController } from "./protocols";
 
-export class GetProductsController {
+export class GetProductsController implements IGetProductsController {
     constructor(private getProductsUseCase: GetProductsUseCase) {}
-    async handle() {
+    async handle() : Promise<HttpResponse<Product[]>> {
         try {
             const products = await this.getProductsUseCase.execute();
 
@@ -15,7 +17,7 @@ export class GetProductsController {
         } catch (error) {
             return {
                 statusCode: 500,
-                body: { message: 'Internal server error' },
+                body: 'Internal server error',
             };
         }
     }

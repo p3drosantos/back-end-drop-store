@@ -4,6 +4,9 @@ import { GetProductsUseCase } from "../products/useCases/GetProductsUseCase";
 import { GetProductsController } from "../products/controllers/GetProductsController";
 import { prisma } from "../prisma";
 import slugify from "slugify";
+import { GetProductByIdUseCase } from "../products/useCases/GetProductByIdUseCase";
+import { GetProductByIdController } from "../products/controllers/GetProductByIdController";
+import { GetProductByIdRepository } from "../products/repositories/GetProductById";
 
 
 const productsRoutes = Router();
@@ -14,6 +17,16 @@ productsRoutes.get("/", async (req, res) => {
     const getProductsController = new GetProductsController(getProductsUseCase);
     
     const {statusCode, body} = await getProductsController.handle( );
+    res.status(statusCode).json(body);
+})
+
+productsRoutes.get("/:id", async (req, res) => {
+    const { id } = req.params;
+    const getProductByIdRepository = new GetProductByIdRepository();
+    const getProductByIdUseCase = new GetProductByIdUseCase(getProductByIdRepository);
+    const getProductByIdController = new GetProductByIdController(getProductByIdUseCase);
+
+    const { statusCode, body } = await getProductByIdController.handle(id);
     res.status(statusCode).json(body);
 })
 

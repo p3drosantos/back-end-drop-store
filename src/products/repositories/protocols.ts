@@ -7,3 +7,8 @@ export interface IGetProductsRepository {
 export interface IGetProductByIdRepository {
   findById(id: string): Promise<Product | null>;
 }
+
+export interface IDeleteProductRepository {
+  delete(id: string): Promise<Product | null>;
+}
+

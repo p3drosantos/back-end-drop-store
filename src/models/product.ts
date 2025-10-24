@@ -8,3 +8,21 @@ categoryId: string;
 discountPercentage: number;
 imageUrls: string[];
 }
+
+export interface UpdateProductDTO {
+    name?: string;
+    description?: string;
+    basePrice?: number;
+    categoryId?: string;
+    discountPercentage?: number;
+    imageUrls?: string[];
+}
+
+export interface CreateProductParams {
+    name: string;
+    description: string;
+    basePrice: number;
+    categoryId: string;
+    discountPercentage: number;
+    imageUrls: string[];
+}

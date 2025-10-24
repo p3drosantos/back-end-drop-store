@@ -16,3 +16,6 @@ export interface HttpResponse<T> {
     statusCode: number;
     body: T | string | null;
 }
+export interface IUpdateProductController {
+    handle(id: string, data: Partial<Product>): Promise<HttpResponse<Product>>;
+}

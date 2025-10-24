@@ -10,6 +10,9 @@ import { DeleteProductRepository } from "../products/repositories/DeleteProductR
 import { DeleteProductUseCase } from "../products/useCases/DeleteProductUseCase";
 import { DeleteProductController } from "../products/controllers/DeleteProductController";
 import { GetProductByIdRepository } from "../products/repositories/GetProductByIdRepository";
+import { UpdateProductRepository } from "../products/repositories/UpdateProductRepository";
+import { UpdateProductUseCase } from "../products/useCases/UpdateProductUseCase";
+import { UpdateProductController } from "../products/controllers/UpdateProductController";
 
 
 const productsRoutes = Router();
@@ -77,6 +80,22 @@ productsRoutes.post("/", async (req, res) => {
       console.error(error);
       return res.status(500).json({ error: "Erro ao deletar produto" });
     }
+  });
+
+  productsRoutes.patch("/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = req.body;
+      const updateProductRepository = new UpdateProductRepository();
+      const updateProductUseCase = new UpdateProductUseCase(updateProductRepository);
+      const updateProductController = new UpdateProductController(updateProductUseCase);
+      const { statusCode, body } = await updateProductController.handle(id, data);
+      res.status(statusCode).json(body);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erro ao atualizar produto" });
+    }
+
   });
 
 

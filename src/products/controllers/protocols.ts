@@ -1,4 +1,4 @@
-import { Product } from "../../models/product";
+import { CreateProductParams, Product, ProductWithUploadUrl } from "../../models/product";
 
 export interface IGetProductsController {
     handle(): Promise<HttpResponse<Product[]>>; 
@@ -17,5 +17,9 @@ export interface HttpResponse<T> {
     body: T | string | null;
 }
 export interface IUpdateProductController {
-    handle(id: string, data: Partial<Product>): Promise<HttpResponse<Product>>;
+  handle(id: string, data: Partial<Product>): Promise<HttpResponse<{ product: Product; uploadUrls?: string[] }>>;
+}
+
+export interface ICreateProductController{
+    handle(data: CreateProductParams): Promise<HttpResponse<ProductWithUploadUrl>>;
 }

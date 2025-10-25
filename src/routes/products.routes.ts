@@ -2,8 +2,6 @@ import { Router } from "express";
 import { GetProductsRepositoryPostgres } from "../products/repositories/GetProductsRepositoryPostgres";
 import { GetProductsUseCase } from "../products/useCases/GetProductsUseCase";
 import { GetProductsController } from "../products/controllers/GetProductsController";
-import { prisma } from "../prisma";
-import slugify from "slugify";
 import { GetProductByIdUseCase } from "../products/useCases/GetProductByIdUseCase";
 import { GetProductByIdController } from "../products/controllers/GetProductByIdController";
 import { DeleteProductRepository } from "../products/repositories/DeleteProductRepository";
@@ -13,6 +11,9 @@ import { GetProductByIdRepository } from "../products/repositories/GetProductByI
 import { UpdateProductRepository } from "../products/repositories/UpdateProductRepository";
 import { UpdateProductUseCase } from "../products/useCases/UpdateProductUseCase";
 import { UpdateProductController } from "../products/controllers/UpdateProductController";
+import { CreateProductRepository } from "../products/repositories/CreateProductRepository";
+import { CreateProductUseCase } from "../products/useCases/CreateProductUseCase";
+import { CreateProductController } from "../products/controllers/CreateProductController";
 
 
 const productsRoutes = Router();
@@ -39,27 +40,28 @@ productsRoutes.get("/:id", async (req, res) => {
 
 productsRoutes.post("/", async (req, res) => {
   try {
-    const { name, description, basePrice, categoryId, discountPercentage, imageUrls } = req.body;
+    const { name, description, basePrice, categoryId, discountPercentage,imageFileName,
+      imageFileType, } = req.body;
 
-    if (!name || !description || !basePrice || !categoryId || !discountPercentage || !imageUrls) {
+    if (!name || !description || !basePrice || !categoryId || !discountPercentage || !imageFileName || !imageFileType) {
       return res.status(400).json({ error: "Campos obrigatórios faltando" });
     }
 
-    const slug = slugify(name, { lower: true, strict: true });
+    const createProductRepository = new CreateProductRepository();
+    const createProductUseCase = new CreateProductUseCase(createProductRepository);
+    const createProductController = new CreateProductController(createProductUseCase);
 
-    const product = await prisma.product.create({
-      data: {
-        name,
-        slug,
-        description,
-        basePrice: parseFloat(basePrice),
-        discountPercentage: parseFloat(discountPercentage),
-        imageUrls,
-        Category: { connect: { id: categoryId } }, 
-      },
+   const { statusCode, body } = await createProductController.handle({
+      name,
+      description,
+      basePrice: Number(basePrice),
+      categoryId,
+      discountPercentage: Number(discountPercentage),
+      imageFileName,
+      imageFileType,
     });
 
-    return res.status(201).json(product);
+    res.status(statusCode).json(body);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Erro ao criar produto" });
@@ -82,21 +84,32 @@ productsRoutes.post("/", async (req, res) => {
     }
   });
 
-  productsRoutes.patch("/:id", async (req, res) => {
+productsRoutes.patch("/:id", async (req, res) => {
     try {
-      const { id } = req.params;
-      const data = req.body;
-      const updateProductRepository = new UpdateProductRepository();
-      const updateProductUseCase = new UpdateProductUseCase(updateProductRepository);
-      const updateProductController = new UpdateProductController(updateProductUseCase);
-      const { statusCode, body } = await updateProductController.handle(id, data);
-      res.status(statusCode).json(body);
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Erro ao atualizar produto" });
-    }
+        const { id } = req.params;
+        const { name, description, basePrice, categoryId, discountPercentage, 
+                imageFileNames, imageFileTypes } = req.body;
 
-  });
+        const updateProductRepository = new UpdateProductRepository();
+        const updateProductUseCase = new UpdateProductUseCase(updateProductRepository);
+        const updateProductController = new UpdateProductController(updateProductUseCase);
+
+        const { statusCode, body } = await updateProductController.handle(id, {
+            name,
+            description,
+            basePrice,
+            categoryId,
+            discountPercentage,
+            imageFileNames,
+            imageFileTypes
+        });
+
+        res.status(statusCode).json(body);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error updating product" });
+    }
+});
 
 
 

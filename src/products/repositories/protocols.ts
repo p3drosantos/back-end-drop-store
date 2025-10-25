@@ -13,6 +13,7 @@ export interface IDeleteProductRepository {
 }
 
 export interface IUpdateProductRepository {
+  findById(id: string): Promise<Product | null>;
   update(id: string, data: Partial<Product>): Promise<Product | null>;
 }
 

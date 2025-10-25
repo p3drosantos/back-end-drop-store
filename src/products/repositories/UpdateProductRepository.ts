@@ -13,4 +13,11 @@ export class UpdateProductRepository implements IUpdateProductRepository {
             basePrice: Number(product.basePrice),
         }
     }
+
+    async findById(id: string): Promise<Product | null> {
+  const product = await prisma.product.findUnique({
+    where: { id }
+  });
+  return product ? { ...product, basePrice: Number(product.basePrice) } : null;
+}
 }
